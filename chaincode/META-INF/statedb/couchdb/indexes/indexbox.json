@@ -1,0 +1,9 @@
+{
+    "index":{
+        "fields":["BoxID", "OwnerID","AssetID"] 
+    },
+    "ddoc":"indexbox", 
+    "name":"index1",
+    "type":"json"
+  }
+

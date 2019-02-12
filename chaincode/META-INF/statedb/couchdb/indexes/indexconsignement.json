@@ -1,0 +1,10 @@
+{
+    "index":{
+        "fields":["ConsignmentID", "OwnerID","AssetID"] 
+    },
+    "ddoc":"indexconsignement", 
+    "name":"index",
+    "type":"json"
+  }
+  
+  

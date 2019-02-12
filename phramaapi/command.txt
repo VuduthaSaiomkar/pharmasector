@@ -1,0 +1,78 @@
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/dist.example.com/users/Admin@dist.example.com/msp
+CORE_PEER_ADDRESS=peer0.dist.example.com:7051
+CORE_PEER_LOCALMSPID="distMSP"
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/dist.example.com/peers/peer0.dist.example.com/tls/ca.crt
+
+
+ peer channel join -b mychannel.block
+
+peer chaincode install -n pharma -v 2.0 -p github.com/
+
+
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/manu.example.com/users/Admin@manu.example.com/msp
+CORE_PEER_ADDRESS=peer0.manu.example.com:7051
+CORE_PEER_LOCALMSPID="manuMSP"
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/manu.example.com/peers/peer0.manu.example.com/tls/ca.crt
+
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/wsale.example.com/users/Admin@wsale.example.com/msp
+CORE_PEER_ADDRESS=peer0.wsale.example.com:7051
+CORE_PEER_LOCALMSPID="wsaleMSP"
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/wsale.example.com/peers/peer0.wsale.example.com/tls/ca.crt
+
+
+
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/retailer.example.com/users/Admin@retailer.example.com/msp
+CORE_PEER_ADDRESS=peer0.retailer.example.com:7051
+CORE_PEER_LOCALMSPID="retailerMSP"
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/retailer.example.com/peers/peer0.retailer.example.com/tls/ca.crt
+
+peer chaincode invoke --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n pharmaedit  -c '{"Args":["manu_creation","qwert","qrid1","taskbox","zxcvb","asd","12-02-2001"]}'
+peer chaincode invoke --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem  -C mychannel -n pharma  -c '{"Args":["manu_saletransaction","sai","asd","zxcvb"]}'
+peer chaincode invoke --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem  -C mychannel -n pharma  -c '{"Args":["dist_sale_transaction","nagesh","omkar","consignment1"]}'
+peer chaincode invoke --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem  -C mychannel -n pharma  -c '{"Args":["ws_sale_transaction","sandeep","nagesh","box1"]}'
+peer chaincode invoke --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem  -C mychannel -n pharma  -c '{"Args":["ret_sale_transaction_single","drug2consignment1","","8456791230"]}'
+
+
+
+
+peer channel create -o orderer.example.com:7050 -c mychannel -f ./configtx/channel.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n pharma -v 2.0 -c '{"Args":[""]}'
+
+ peer chaincode query -C mychannel -n modify -c '{"Args":["manu_consignments_list","{\"selector\":{\"ownerid\":\"asd\"}}"]}' 
+ peer chaincode query -C mychannel -n modify -c '{"Args":["dist_consignments_list","sai","zxcvb"]}' 
+  peer chaincode query -C mychannel -n modify -c '{"Args":["SaleHistory_Manu","sai"]}' 
+    peer chaincode query -C mychannel -n pharma -c '{"Args":["scan_asset","drug1consignment1"}' 
+
+
+
+ peer chaincode query -C mychannel -n pharma -c '{"Args":["ws_box_detail","manu","taskbox"]}' 
+
+peer chaincode upgrade -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n pharma -v 2.2 -c '{"Args":[""]}' 
+
+peer chaincode upgrade -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n mycc -v 3.0 -c '{"Args":[""]}'
+
+apt-get update
+apt-get install vim
+
+
+fabric-ca-client enroll --caname ca1.example.com --tls.client.certfile   ca.dist.example.com-cert.pem --tls.client.keyfile  6dd02847f4b76f5d3a2ac202e618599d0af6d61c1708fc47d2bfdb15949cfbd0_sk -u https://admin:adminpw@localhost:7054
+
+
+
+
+export TRX_ID=$(curl -s -X POST \
+  http://localhost:4000/initledger \
+   -H "authorization: Bearer $manu_TOKEN" \
+   -H "content-type: application/json" \
+   -d '{
+ "peers": ["peer0.manu.example.com","peer0.retailer.example.com"],
+ "fcn":"initledger",
+ "args":[""]
+ }')
+
+
+
+curl -s -X GET  "http://localhost:4000/consignment_detail?peer=peer0.retailer.example.com&fcn=consignment_detail&args=%5B%22krishna%22%2C%22consignment1%22%5D"   -H "authorization: Bearer $manu_TOKEN"   -H "content-type: application/json"
+
+
+curl -s -X GET  "http://localhost:4000/queryCar?peer=peer0.dealer.example.com&fcn=queryCar&args=%5B%22CAR0%22%5D"   -H "authorization: Bearer $company_TOKEN"   -H "content-type: application/json"
